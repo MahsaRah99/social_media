@@ -9,3 +9,11 @@ class BaseModel(models.Model):
     
     class Meta:
         abstract = True
+
+
+class MyManager(models.Manager):
+    def get_queryset(self) -> QuerySet:
+        return super().get_queryset().filter(is_active=True)
+
+    def archieves(self):
+        return super().get_queryset().filter(is_active=False)
