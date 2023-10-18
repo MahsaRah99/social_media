@@ -65,3 +65,15 @@ class User(AbstractUser, PermissionsMixin):
 
     def get_followings(self):
         return self.followings.all()
+
+
+class Relation(models.Model):
+    from_user = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="followings"
+    )
+    to_user = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="followers"
+    )
+
+    def __str__(self) -> str:
+        return f"{self.from_user} follows {self.to_user}"
