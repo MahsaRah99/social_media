@@ -17,3 +17,16 @@ class MyManager(models.Manager):
 
     def archieves(self):
         return super().get_queryset().filter(is_active=False)
+
+
+class SoftDeleteModel(BaseModel):
+    objects = MyManager
+    
+    is_active = models.BooleanField(verbose_name=_('is active'), default=True)
+    
+    def delete(self):
+        self.is_active = False
+        self.save()
+        
+    class Meta:
+        abstract = True
