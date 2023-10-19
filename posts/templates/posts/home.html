@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_headers %}
+<link rel="stylesheet" href="{% static 'home/css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="get">
+    {{ form.as_p }}
+    <input type="submit" value="Search">
+</form><br/><br/>
+
+<div class="card">
+    {% for post in posts %}
+        <h3>{{post.author}}:</h3>
+        <a href="{{ post.get_absolute_url }}" class="card-body">{{ post.body|truncatewords:8 }}</a>
+    {% endfor %}
+</div>
+
+{% endblock %}
