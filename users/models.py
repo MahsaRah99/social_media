@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from .managers import UserManager
-from Blaze.settings import AUTH_USER_MODEL
 
 
 class User(AbstractUser, PermissionsMixin):
@@ -69,10 +68,10 @@ class User(AbstractUser, PermissionsMixin):
 
 class Relation(models.Model):
     from_user = models.ForeignKey(
-        AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="followings"
+        User, on_delete=models.CASCADE, related_name="followings"
     )
     to_user = models.ForeignKey(
-        AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="followers"
+        User, on_delete=models.CASCADE, related_name="followers"
     )
 
     def __str__(self) -> str:
