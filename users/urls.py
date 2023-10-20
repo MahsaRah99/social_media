@@ -1,10 +1,37 @@
 from django.urls import path
 from users import views
 
-app_name = 'users'
+app_name = "users"
 urlpatterns = [
-    path('register/', views.UserRegisterView.as_view(), name='user_register'),
-	path('verify/', views.UserRegisterVerifyCodeView.as_view(), name='verify_code'),
-	path('login/', views.UserLoginView.as_view(), name='user_login'),
-	path('logout/', views.UserLogoutView.as_view(), name='user_logout'),
+    path("register/", views.UserRegisterView.as_view(), name="user_register"),
+    path("verify/", views.UserRegisterVerifyCodeView.as_view(), name="verify_code"),
+    path("login/", views.UserLoginView.as_view(), name="user_login"),
+    path("logout/", views.UserLogoutView.as_view(), name="user_logout"),
+    path(
+        "profile/<int:user_id>/", views.UserProfileView.as_view(), name="user_profile"
+    ),
+    path("edit_user/", views.EditUserProfileView.as_view(), name="edit_user"),
+    path("follow/<int:user_id>/", views.UserFollowView.as_view(), name="user_follow"),
+    path(
+        "unfollow/<int:user_id>/",
+        views.UserUnfollowView.as_view(),
+        name="user_unfollow",
+    ),
+    # password reset process
+    path("reset/", views.UserPasswordResetView.as_view(), name="reset_password"),
+    path(
+        "reset/done/",
+        views.UserPasswordResetDoneView.as_view(),
+        name="password_reset_done",
+    ),
+    path(
+        "confirm/<uidb64>/<token>/",
+        views.UserPasswordResetConfirmView.as_view(),
+        name="password_reset_confirm",
+    ),
+    path(
+        "confirm/complete",
+        views.UserPasswordResetCompleteView.as_view(),
+        name="password_reset_complete",
+    ),
 ]
