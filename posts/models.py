@@ -15,3 +15,42 @@ class Tag(BaseModel):
     def tag_post_count(self):
         return self.posts.count()
 
+
+class Post(TimeStampMixin, SoftDeleteModel):
+    author = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts"
+    )
+    title = models.CharField(
+        verbose_name=_("Title"), max_length=100, help_text=_("Title of post")
+    )
+    body = models.TextField(
+        verbose_name=_("body"), max_length=700, help_text=_("Body of post")
+    )
+    slug = models.SlugField()
+    tags = models.ManyToManyField("Tag", related_name="tags", blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.author} wrote about {self.title}"
+
+    def get_absolute_url(self):
+        return reverse("posts:post_detail", args=(self.id, self.slug))
+
+    def likes_count(self):
+        return self.plikes.count()
+
+    def user_can_like(self, user):
+        user_like = user.ulikes.filter(post=self)
+        if user_like.exists():
+            return True
+        return False
+
+    class Meta:
+        ordering = ("-created_at",)
+
+
+class PostRecycle(Post):
+    objects = Manager()
+
+    class Meta:
+        proxy = True
+
