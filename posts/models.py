@@ -84,3 +84,6 @@ class Comment(TimeStampMixin, BaseModel):
         return f"{self.user} - {self.body[:30]}"
 
 
+class PostImage(BaseModel):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="images")
+    image = models.ImageField(verbose_name=_("Image"), upload_to="images/%Y/%m/%d/")
