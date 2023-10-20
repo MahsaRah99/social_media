@@ -2,15 +2,18 @@
 {% load static %}
 
 {% block extra_headers %}
-<link rel="stylesheet" href="{% static 'home/css/style.css' %}">
+<link rel="stylesheet" href="{% static 'posts/css/style.css' %}">
 {% endblock %}
 
 {% block content %}
-
 <form action="" method="get">
     {{ form.as_p }}
     <input type="submit" value="Search">
 </form><br/><br/>
+
+<h2>Welcome to Blaze! connect with your friends and share your thoughts</h2>
+<h3>what's going on today</h3>
+<br/><br/>
 
 <div class="card">
     {% for post in posts %}
