@@ -5,15 +5,6 @@ from .managers import UserManager
 
 
 class User(AbstractUser, PermissionsMixin):
-    username = models.CharField(
-        verbose_name=_("Username"),
-        max_length=150,
-        unique=True,
-        db_index=True,
-        help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-        ),
-    )
     email = models.EmailField(
         verbose_name=_("Email Address"),
         unique=True,
@@ -21,7 +12,7 @@ class User(AbstractUser, PermissionsMixin):
     )
     bio = models.CharField(
         verbose_name=_("Biograpghy"),
-        max_length=256,
+        max_length=300,
         blank=True,
         help_text=_("Optional. Enter a brief description about yourself."),
     )
@@ -32,7 +23,7 @@ class User(AbstractUser, PermissionsMixin):
         help_text=_("Optional. Enter your living location."),
     )
     picture = models.FileField(
-        upload_to="uploads/photos/",
+        upload_to="profiles/%Y/%m/%d/",
         blank=True,
         help_text=_("Optional. Upload a profile picture."),
     )
@@ -41,7 +32,6 @@ class User(AbstractUser, PermissionsMixin):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["email", "username"]
 
-    is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
 
     def __str__(self) -> str:

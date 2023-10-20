@@ -65,3 +65,9 @@ class VerifyCodeForm(forms.Form):
 class UserLoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
+
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ("first_name", "last_name", "username", "picture", "bio", "location")
