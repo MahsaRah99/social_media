@@ -54,3 +54,33 @@ class PostRecycle(Post):
     class Meta:
         proxy = True
 
+
+class Like(models.Model):
+    user = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="ulikes"
+    )
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="plikes")
+
+    def __str__(self):
+        return f"{self.user} liked {self.post.slug}"
+
+
+class Comment(TimeStampMixin, BaseModel):
+    user = models.ForeignKey(
+        AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="ucomments"
+    )
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="pcomments")
+    reply = models.ForeignKey(
+        "self",
+        on_delete=models.CASCADE,
+        related_name="rcomments",
+        blank=True,
+        null=True,
+    )
+    is_reply = models.BooleanField(default=False)
+    body = models.TextField(max_length=300)
+
+    def __str__(self):
+        return f"{self.user} - {self.body[:30]}"
+
+
