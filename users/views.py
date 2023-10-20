@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .forms import UserRegistrationForm, VerifyCodeForm, UserLoginForm
+from .forms import UserRegistrationForm, VerifyCodeForm, UserLoginForm, EditProfileForm
 from verification import OtpCode
 import random
 from utils import send_otp_code
@@ -8,6 +8,8 @@ from django.contrib import messages
 from .models import User, Relation
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import views as auth_views
+from django.urls import reverse_lazy
 
 
 class UserRegisterView(View):
@@ -111,12 +113,68 @@ class UserProfileView(LoginRequiredMixin, View):
     def get(self, request, user_id):
         is_following = False
         user = get_object_or_404(User, pk=user_id)
-        posts = user.posts.filter(is_active=True)
+        posts = user.posts.all(is_active=True)
         relation = Relation.objects.filter(from_user=request.user, to_user=user)
         if relation.exists():
             is_following = True
         return render(
             request,
-            "account/profile.html",
+            "users/profile.html",
             {"user": user, "posts": posts, "is_following": is_following},
         )
+
+
+class EditUserProfileView(LoginRequiredMixin, View):
+    form_class = EditProfileForm
+
+    def get(self, request):
+        form = self.form_class(instance=request.user)
+        return render(request, "users/edit_profile.html", {"form": form})
+
+    def post(self, request):
+        form = self.form_class(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "profile edited successfully", "success")
+        return redirect("users:user_profile", request.user.id)
+
+
+class UserFollowView(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        user = User.objects.get(id=kwargs["user_id"])
+        if user.id != request.user.id:
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            messages.error(request, "you cant follow/unfollow your account", "danger")
+            return redirect("users:user_profile", user.id)
+
+    def get(self, request, user_id):
+        user = User.objects.get(id=user_id)
+        relation = Relation.objects.filter(from_user=request.user, to_user=user)
+        if relation.exists():
+            messages.error(request, "you are already following this user", "danger")
+        else:
+            Relation(from_user=request.user, to_user=user).save()
+            messages.success(request, "you followed this user", "success")
+        return redirect("users:user_profile", user.id)
+
+
+class UserUnfollowView(LoginRequiredMixin, View):
+    def dispatch(self, request, *args, **kwargs):
+        user = User.objects.get(id=kwargs["user_id"])
+        if user.id != request.user.id:
+            return super().dispatch(request, *args, **kwargs)
+        else:
+            messages.error(request, "you cant follow/unfollow your account", "danger")
+            return redirect("users:user_profile", user.id)
+
+    def get(self, request, user_id):
+        user = User.objects.get(id=user_id)
+        relation = Relation.objects.filter(from_user=request.user, to_user=user)
+        if relation.exists():
+            relation.delete()
+            messages.success(request, "you unfollowed this user", "success")
+        else:
+            messages.error(request, "you are not following this user", "danger")
+        return redirect("users:user_profile", user.id)
+
