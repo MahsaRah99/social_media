@@ -16,7 +16,7 @@ class Tag(BaseModel):
         return self.posts.count()
 
 
-class Post(TimeStampMixin, SoftDeleteModel):
+class Post(SoftDeleteModel, TimeStampMixin):
     author = models.ForeignKey(
         AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="posts"
     )
@@ -86,4 +86,4 @@ class Comment(TimeStampMixin, BaseModel):
 
 class PostImage(BaseModel):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="images")
-    image = models.ImageField(verbose_name=_("Image"), upload_to="images/%Y/%m/%d/")
+    image = models.FileField(verbose_name=_("Image"), upload_to="images/%Y/%m/%d/")
