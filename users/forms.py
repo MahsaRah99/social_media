@@ -1,4 +1,4 @@
-from django.forms import forms
+from django import forms
 from .models import User
 from .verification import OtpCode
 from django.core.exceptions import ValidationError

@@ -1,15 +1,15 @@
-from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-from .forms import UserRegistrationForm, VerifyCodeForm, UserLoginForm, EditProfileForm
-from verification import OtpCode
-import random
-from utils import send_otp_code
-from django.contrib import messages
-from .models import User, Relation
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import views as auth_views
+from django.contrib import messages
 from django.urls import reverse_lazy
+from .models import User, Relation
+from .forms import UserRegistrationForm, VerifyCodeForm, UserLoginForm, EditProfileForm
+from .verification import OtpCode
+from utils import send_otp_code
+import random
 
 
 class UserRegisterView(View):
