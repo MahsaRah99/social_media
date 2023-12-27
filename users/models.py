@@ -30,7 +30,7 @@ class User(AbstractUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["email", "username"]
+    REQUIRED_FIELDS = ["username"]
 
     is_admin = models.BooleanField(default=False)
 
