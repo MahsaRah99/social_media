@@ -65,7 +65,7 @@ class Like(models.Model):
         return f"{self.user} liked {self.post.slug}"
 
 
-class Comment(TimeStampMixin, BaseModel):
+class Comment(BaseModel, TimeStampMixin):
     user = models.ForeignKey(
         AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="ucomments"
     )
